@@ -60,7 +60,7 @@ pipeline {
           artifacts: [
             [artifactId: 'my-artifact',
              classifier: '',
-             file: 'my-artifact.tgz',
+             file: 'nodejs-app-0.0.0.tgz',
              type: 'tgz']
           ]
         )
