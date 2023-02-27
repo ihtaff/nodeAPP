@@ -28,15 +28,16 @@ pipeline {
         sh "npm config set registry ${NPM_REGISTRY}"
       }
     }
-     stage ('Source Composition Analysis') {
-      steps {
-        dependencyCheck additionalArguments: '--format HTML --format XML --format JSON', odcInstallation: 'DC'
-        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-      }
-    }
+     
     stage('Install Dependencies') {
       steps {
         sh 'npm install'
+      }
+    }
+    stage ('Source Composition Analysis') {
+      steps {
+        dependencyCheck additionalArguments: '--format HTML --format XML --format JSON', odcInstallation: 'DC'
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
       }
     }
     stage('Build') {
