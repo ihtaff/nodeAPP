@@ -41,9 +41,10 @@ pipeline {
         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
       }
     }
-    stage('Build') {
+    stage('Build and package') {
       steps {
         sh 'npm build'
+        sh'npm pack'
       }
     }
     stage('Upload Artifact to Nexus') {
