@@ -6,6 +6,7 @@ pipeline {
   }
   
   environment {
+    NEXUS_LOGIN = "nexus"
     NPM_REGISTRY = 'http://172.17.0.1:8081/repository/npm-proxy'
   }
   
@@ -45,22 +46,40 @@ pipeline {
         sh 'npm build'
       }
     }
-
+    stage('Upload Artifact to Nexus') {
+      steps {
+        nexusArtifactUploader(
+          nexusVersion: 'nexus3',
+          protocol: 'http',
+          nexusUrl: '172.17.0.1:8081',
+          groupId: 'my-group',
+          version: "${env.BUILD_ID}",
+          repository: 'npm-hosted',
+          credentialsId: "${NEXUS_LOGIN}",
+          artifacts: [
+            [artifactId: 'my-artifact',
+             classifier: '',
+             file: 'my-artifact.tgz',
+             type: 'tgz']
+          ]
+        )
+      }
+    }
   }
   
-      post {
-        always {
-        echo 'One way or another, I have finished'
-        deleteDir() /*IMPORTANT FOR ALL PIPELINES! clean up our workspace, to avoid saturating the Jenkins server storage*/
-        }
-         success {
-            echo 'I succeeeded!'
-        }
-         unstable{
-            echo 'I am unstable :/'
-         } 
-         failure {
-            echo 'I failed :('
-         }
+  post {
+    always {
+      echo 'One way or another, I have finished'
+      deleteDir() /*IMPORTANT FOR ALL PIPELINES! clean up our workspace, to avoid saturating the Jenkins server storage*/
     }
+    success {
+      echo 'I succeeeded!'
+    }
+    unstable{
+      echo 'I am unstable :/'
+    } 
+    failure {
+      echo 'I failed :('
+    }
+  }
 }
