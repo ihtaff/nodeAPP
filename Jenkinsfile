@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Code checkout') {
       steps {
-        checkout scmGit(branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/your/repo']])
+        checkout scmGit(branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ihtaff/nodeAPP.git']])
       }
     }
     stage('Install Dependencies') {
