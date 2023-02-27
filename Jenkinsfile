@@ -5,6 +5,9 @@ pipeline {
     nodejs 'node'
   }
   
+  environment {
+    NPM_REGISTRY = 'http://172.17.0.1:8081/repository/npm-proxy'
+  }
   
   stages {
     stage ('Initialize') {
@@ -20,6 +23,11 @@ pipeline {
         checkout scmGit(branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ihtaff/nodeAPP.git']])
       }
     }
+    stage('Configure npm registry') {
+      steps {
+        sh "npm config set registry ${NPM_REGISTRY}"
+      }
+    }
     stage('Install Dependencies') {
       steps {
         sh 'npm install'
@@ -30,13 +38,10 @@ pipeline {
         sh 'npm build'
       }
     }
-     stage ('Source Composition Analysis') {
+    stage ('Source Composition Analysis') {
       steps {
-         dependencyCheck additionalArguments: '--format HTML --format XML --format JSON', odcInstallation: 'DC'
+        dependencyCheck additionalArguments: '--format HTML --format XML --format JSON', odcInstallation: 'DC'
         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-         
-         
-        
       }
     }
   }
