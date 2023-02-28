@@ -52,13 +52,15 @@ pipeline {
     NEXUS_CREDENTIALS = credentials('nexus')
     NEXUS_USERNAME = "${NEXUS_CREDENTIALS_USR}"
     NEXUS_PASSWORD = "${NEXUS_CREDENTIALS_PSW}"
+    BUILD_ID = "${env.BUILD_ID}"
+    ARTIFACT_NAME = "nodejs-app-${BUILD_ID}.tgz"
   }
     steps {
         sh '''
             curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
             -H "accept: application/json" \
             -H "Content-Type: multipart/form-data" \
-            -F "npm.asset=@nodejs-app-${env.BUILD_ID}.tgz;type=application/x-compressed"
+            -F "npm.asset=@${ARTIFACT_NAME};type=application/x-compressed"
         '''
     }
 }
