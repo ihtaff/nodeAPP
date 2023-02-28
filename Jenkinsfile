@@ -48,7 +48,7 @@ pipeline {
           NEW_VERSION = "${BUILD_ID}.0.0"
       }
       steps {
-        sh sed -i 's/\"version\": \".*\"/\"version\": \"${NEW_VERSION}\"/g' ${PACKAGE_FILE}
+        sh 'sed -i "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION}\"/g" ${PACKAGE_FILE}'
         sh 'npm build'
         sh'npm pack'
       }
