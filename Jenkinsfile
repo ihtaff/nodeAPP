@@ -48,9 +48,14 @@ pipeline {
       }
     }
     stage('Publish NPM Artifact') {
+      environment {
+    NEXUS_CREDENTIALS = credentials('nexus')
+    NEXUS_USERNAME = NEXUS_CREDENTIALS_USR
+    NEXUS_PASSWORD = NEXUS_CREDENTIALS_PSW
+  }
     steps {
         sh '''
-            curl -u admin -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
+            curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
             -H "accept: application/json" \
             -H "Content-Type: multipart/form-data" \
             -F "npm.asset=@nodejs-app-0.0.0.tgz;type=application/x-compressed"
