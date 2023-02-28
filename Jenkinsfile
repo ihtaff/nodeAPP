@@ -42,14 +42,7 @@ pipeline {
       }
     }
     stage('Build and package') {
-      environment {
-          BUILD_ID = "${env.BUILD_ID}"
-          PACKAGE_FILE = "package.json"
-          NEW_VERSION = "${BUILD_ID}.0.0"
-      }
       steps {
-      
-        sh'sed -i 's/version: .*/version: 54.0.0/g' package.json'
         sh 'npm build'
         sh'npm pack'
       }
@@ -59,15 +52,16 @@ pipeline {
     NEXUS_CREDENTIALS = credentials('nexus')
     NEXUS_USERNAME = "${NEXUS_CREDENTIALS_USR}"
     NEXUS_PASSWORD = "${NEXUS_CREDENTIALS_PSW}"
-    ARTIFACT_NAME = "nodejs-app-${BUILD_ID}.tgz"
+
   }
     steps {
         sh '''
+            sed -i 's/\"version\": \".*\"/\"version\": \"${NEW_VERSION}\"/g' ${PACKAGE_FILE}
        
             curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
             -H "accept: application/json" \
             -H "Content-Type: multipart/form-data" \
-            -F "npm.asset=@${ARTIFACT_NAME};type=application/x-compressed"
+            -F "npm.asset=@nodejs-app-0.0.0.tgz;type=application/x-compressed"
         '''
     }
 }
