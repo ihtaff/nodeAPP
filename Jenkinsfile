@@ -53,12 +53,12 @@ pipeline {
           nexusVersion: 'nexus3',
           protocol: 'http',
           nexusUrl: '172.17.0.1:8081',
-          groupId: 'my-group',
+          groupId: 'mygroupID',
           version: "${env.BUILD_ID}",
           repository: 'npm-hosted',
           credentialsId: "${NEXUS_LOGIN}",
           artifacts: [
-            [artifactId: 'my-artifact',
+            [artifactId: 'myArtifact',
              classifier: '',
              file: 'nodejs-app-0.0.0.tgz',
              type: 'tgz']
