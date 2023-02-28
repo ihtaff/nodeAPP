@@ -50,8 +50,8 @@ pipeline {
     stage('Publish NPM Artifact') {
       environment {
     NEXUS_CREDENTIALS = credentials('nexus')
-    NEXUS_USERNAME = NEXUS_CREDENTIALS_USR
-    NEXUS_PASSWORD = NEXUS_CREDENTIALS_PSW
+    NEXUS_USERNAME = "${NEXUS_CREDENTIALS_USR}"
+    NEXUS_PASSWORD = "${NEXUS_CREDENTIALS_PSW}"
   }
     steps {
         sh '''
