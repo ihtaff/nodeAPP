@@ -52,10 +52,10 @@ pipeline {
         nexusArtifactUploader(
           nexusVersion: 'nexus3',
           protocol: 'http',
-          nexusUrl: '172.17.0.1:8081/',
+          nexusUrl: '172.17.0.1:8081',
           groupId: 'mygroupID',
           version: "${env.BUILD_ID}",
-          repository: 'npm-hosted',
+          repository: 'npm-hosted/',
           credentialsId: "${NEXUS_LOGIN}",
           artifacts: [
             [artifactId: 'myArtifact',
