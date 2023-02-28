@@ -43,44 +43,41 @@ pipeline {
     }
     stage('Build and package') {
       steps {
+        sh 'sed -i "s/\\"version\\": \\".*\\"/\\"version\\": \\"${BUILD_ID}.0.0\\"/g" package.json'
         sh 'npm build'
         sh'npm pack'
       }
     }
     stage('Publish NPM Artifact') {
       environment {
-    NEXUS_CREDENTIALS = credentials('nexus')
-    NEXUS_USERNAME = "${NEXUS_CREDENTIALS_USR}"
-    NEXUS_PASSWORD = "${NEXUS_CREDENTIALS_PSW}"
-
-  }
-    steps {
+        NEXUS_CREDENTIALS = credentials('nexus')
+        NEXUS_USERNAME = "${NEXUS_CREDENTIALS_USR}"
+        NEXUS_PASSWORD = "${NEXUS_CREDENTIALS_PSW}"
+      }
+      steps {
         sh '''
-
-            curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
-            -H "accept: application/json" \
-            -H "Content-Type: multipart/form-data" \
-            -F "npm.asset=@nodejs-app-1.0.0.tgz;type=application/x-compressed"
+          curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
+          -H "accept: application/json" \
+          -H "Content-Type: multipart/form-data" \
+          -F "npm.asset=@nodejs-app-${BUILD_ID}.0.0.tgz;type=application/x-compressed"
         '''
+      }
     }
-}
-
   }
-   post {
-        always {
-        echo 'One way or another, I have finished'
-        deleteDir() /*IMPORTANT FOR ALL PIPELINES! clean up our workspace, to avoid saturating the Jenkins server storage*/
-        }
-         success {
-            echo 'I succeeeded!'
-        }
-         unstable{
-            echo 'I am unstable :/'
-         } 
-         failure {
-            echo 'I failed :('
-         }
-    }
   
-
+  post {
+    always {
+      echo 'One way or another, I have finished'
+      deleteDir() /*IMPORTANT FOR ALL PIPELINES! clean up our workspace, to avoid saturating the Jenkins server storage*/
+    }
+    success {
+      echo 'I succeeeded!'
+    }
+    unstable{
+      echo 'I am unstable :/'
+    } 
+    failure {
+      echo 'I failed :('
+    }
+  }
 }
