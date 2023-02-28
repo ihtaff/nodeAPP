@@ -51,8 +51,8 @@ pipeline {
     steps {
         withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'admin', passwordVariable: 'Kontira@@2022')]) {
             sh "npm config set registry http://172.17.0.1:8081/repository/npm-hosted/"
-            sh "npm login --registry=http://172.17.0.1/repository/npm-hosted/ --scope=@my-scope --always-auth"
-            sh "npm publish nodejs-app-0.0.0.tgz --registry=http://nexus-url:8081/repository/npm-hosted/"
+            sh "npm login --registry=http://172.17.0.1:8081/repository/npm-hosted/ --scope=@my-scope --always-auth"
+            sh "npm publish nodejs-app-0.0.0.tgz --registry=http://172.17.0.1:8081/repository/npm-hosted/"
         }
     }
 }
