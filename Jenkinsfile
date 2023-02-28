@@ -49,6 +49,7 @@ pipeline {
       }
       steps {
         sh 'sed -i "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION}\"/g" ${PACKAGE_FILE}'
+        sed -i 's/version: .*/version: 53.0.0/g' package.json
         sh 'npm build'
         sh'npm pack'
       }
