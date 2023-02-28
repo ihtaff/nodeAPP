@@ -47,25 +47,16 @@ pipeline {
         sh'npm pack'
       }
     }
-    stage('Upload Artifact to Nexus') {
-      steps {
-        nexusArtifactUploader(
-          nexusVersion: 'nexus3',
-          protocol: 'http',
-          nexusUrl: '172.17.0.1:8081',
-          groupId: 'mygroupID',
-          version: "${env.BUILD_ID}",
-          repository: 'npm-hosted/',
-          credentialsId: "${NEXUS_LOGIN}",
-          artifacts: [
-            [artifactId: 'myArtifact',
-             classifier: '',
-             file: 'nodejs-app-0.0.0.tgz',
-             type: 'tgz']
-          ]
-        )
-      }
+    stage('Publish NPM Artifact') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'nexus-login', usernameVariable: 'admin', passwordVariable: 'Kontira@@2022')]) {
+            sh "npm config set registry http://172.17.0.1:8081/repository/npm-hosted/"
+            sh "npm login --registry=http://172.17.0.1/repository/npm-hosted/ --scope=@my-scope --always-auth"
+            sh "npm publish nodejs-app-0.0.0.tgz --registry=http://nexus-url:8081/repository/npm-hosted/"
+        }
     }
+}
+
   }
    post {
         always {
