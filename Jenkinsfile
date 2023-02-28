@@ -58,7 +58,7 @@ pipeline {
             curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
             -H "accept: application/json" \
             -H "Content-Type: multipart/form-data" \
-            -F "npm.asset=@nodejs-app-0.0.0.tgz;type=application/x-compressed"
+            -F "npm.asset=@nodejs-app-${env.BUILD_ID}.tgz;type=application/x-compressed"
         '''
     }
 }
