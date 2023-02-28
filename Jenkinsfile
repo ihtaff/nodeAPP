@@ -56,8 +56,7 @@ pipeline {
   }
     steps {
         sh '''
-            sed -i 's/\"version\": \".*\"/\"version\": \"${NEW_VERSION}\"/g' ${PACKAGE_FILE}
-       
+
             curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -X POST "http://172.17.0.1:8081/service/rest/v1/components?repository=npm-hosted" \
             -H "accept: application/json" \
             -H "Content-Type: multipart/form-data" \
